@@ -1,14 +1,15 @@
 use std::env;
 
-use lox::{run_file, run_prompt};
-
 mod lox;
+mod scanner;
+mod token;
 
 fn main() {
     let args: Vec<String> = env::args().collect();
+    let mut interpreter = lox::Lox::new();
 
     if args.len() == 2 {
-        run_file(&args[1]);
+        interpreter.run_file(&args[1]);
         return;
     }
 
@@ -17,5 +18,5 @@ fn main() {
         std::process::exit(64);
     }
 
-    run_prompt();
+    interpreter.run_prompt();
 }
