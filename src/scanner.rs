@@ -1,6 +1,7 @@
-use std::{ops::IndexMut, thread::current};
-
-use crate::token::{self, Token, TokenType};
+use crate::{
+    errors::WithError,
+    token::{self, Token},
+};
 
 struct Scanner {
     tokens: Vec<Token>,
@@ -9,6 +10,8 @@ struct Scanner {
     current: i32,
     line: i32,
 }
+
+impl WithError for Scanner {}
 
 impl Scanner {
     pub fn new(source: String) -> Scanner {
@@ -21,18 +24,19 @@ impl Scanner {
         }
     }
 
-    pub fn scan_tokens(&self) -> Vec<Token> {
+    pub fn scan_tokens(&mut self) {
         while !&self.is_at_end() {
             self.start = self.current;
             self.scan_token();
         }
 
         let token = Token {
-            r#type: token::TokenType.Eof,
-            lexeme: "",
-            literal: Nil,
-            line: todo!(),
+            r#type: token::TokenType::Eof,
+            lexeme: String::from(""),
+            literal: None,
+            line: self.line,
         };
+
         self.tokens.push(token);
     }
 
@@ -40,5 +44,7 @@ impl Scanner {
         &self.current >= &(self.source.len() as i32)
     }
 
-    fn scan_token(&self) {}
+    fn scan_token(&self) -> Result<(), &'static str> {
+        Ok(Self::error(self.line as usize, "Unexpected character."))
+    }
 }

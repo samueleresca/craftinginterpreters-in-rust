@@ -1,5 +1,6 @@
 use std::env;
 
+mod errors;
 mod lox;
 mod scanner;
 mod token;

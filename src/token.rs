@@ -1,7 +1,8 @@
 use std::{any::Any, fmt};
 
 #[derive(Debug)]
-enum TokenType {
+
+pub(crate) enum TokenType {
     // Single-character token.
     LeftParen,
     RightParen,
@@ -48,10 +49,10 @@ enum TokenType {
     Eof,
 }
 
-pub struct Token {
+pub(crate) struct Token {
     pub r#type: TokenType,
     pub lexeme: String,
-    pub literal: Box<dyn Any>,
+    pub literal: Option<Box<dyn Any>>,
     pub line: i32,
 }
 
