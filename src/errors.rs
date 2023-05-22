@@ -1,14 +1,26 @@
-use std::sync::atomic::AtomicBool;
+use std::{sync::atomic::AtomicBool, fmt};
 
 pub static HAD_ERROR: AtomicBool = AtomicBool::new(false);
 
-pub trait WithError {
-    fn error(line: usize, message: &str) {
-        Self::report(line, "", message);
-    }
+pub(crate) struct CompileError {
+    pub line: usize,
+    pub location: String,
+    pub message: String,
+}
 
-    fn report(line: usize, location: &str, message: &str) {
-        println!("[line {}] Error {}: {}", line, location, message);
+impl CompileError {
+    pub(crate) fn new(line: usize, location: String, message: String) -> Self {
+        CompileError {
+            line,
+            location,
+            message,
+        }
+    }
+}
+
+pub(crate) trait WithError {
+    fn error(error: CompileError) {
+        println!("{}", error);
     }
 
     fn set_error(value: bool) {
@@ -17,5 +29,12 @@ pub trait WithError {
 
     fn has_error() -> bool {
         HAD_ERROR.load(std::sync::atomic::Ordering::Relaxed)
+    }
+}
+
+impl fmt::Display for CompileError {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        // Customize so only `x` and `y` are denoted.
+        write!(f, "[line {}] Error {}: {}", self.line, self.location, self.message)
     }
 }

@@ -26,7 +26,7 @@ pub(crate) enum TokenType {
     LessEqual,
     // Literals.
     Identifier,
-    String,
+    StringValue,
     Number,
     // Keywords.
     And,
@@ -53,7 +53,7 @@ pub(crate) struct Token {
     pub r#type: TokenType,
     pub lexeme: String,
     pub literal: Option<Box<dyn Any>>,
-    pub line: i32,
+    pub line: usize,
 }
 
 impl fmt::Display for Token {
