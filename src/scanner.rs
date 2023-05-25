@@ -1,9 +1,7 @@
-use std::any::Any;
-
 use crate::{
     errors::{CompileError, WithError},
     token::{
-        self, Token,
+        self, Literal, Token,
         TokenType::{self},
     },
 };
@@ -107,6 +105,18 @@ impl Scanner {
                     self.add_token(TokenType::Slash);
                 }
             }
+            ' ' | '\r' | '\t' => {
+                // Ignore.
+            }
+            '\n' => {
+                self.line += 1;
+            }
+            '"' => {
+                let result = self.parse_string();
+                if result.is_err() {
+                    return result;
+                }
+            }
             _ => {
                 return Err(CompileError::new(
                     self.line as usize,
@@ -122,7 +132,7 @@ impl Scanner {
         self.add_token_literal(r#type, None);
     }
 
-    fn add_token_literal(&mut self, r#type: token::TokenType, literal: Option<Box<dyn Any>>) {
+    fn add_token_literal(&mut self, r#type: token::TokenType, literal: Option<Literal>) {
         let text = &self.source[self.start as usize..self.current as usize];
         let token = Token {
             r#type,
@@ -137,6 +147,34 @@ impl Scanner {
         let c = self.source.chars().nth(self.current as usize);
         self.current += 1;
         c.unwrap()
+    }
+
+    fn parse_string(&mut self) -> Result<(), CompileError> {
+        while (self.peek() != Some('"') && !self.is_at_end()) {
+            if (self.peek() == Some('\n')) {
+                self.line += 1;
+            }
+            self.advance();
+        }
+
+        if (self.is_at_end()) {
+            return Err(CompileError::new(
+                self.line,
+                "".to_string(),
+                "Unterminated string.".to_string(),
+            ));
+        }
+
+        self.advance();
+        let value = self
+            .source
+            .get(self.start + 1..self.current - 1)
+            .map(|f| f.to_string());
+
+        let literal_value: Option<Literal> = value.map(|v| Literal::Str(v));
+        self.add_token_literal(TokenType::StringValue, literal_value);
+
+        Ok(())
     }
 
     fn match_token(&mut self, expected: char) -> bool {

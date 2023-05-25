@@ -49,10 +49,17 @@ pub(crate) enum TokenType {
     Eof,
 }
 
+#[derive(Debug, Clone)]
+pub enum Literal {
+    Identifier(String),
+    Str(String),
+    Number(f64),
+}
+
 pub(crate) struct Token {
     pub r#type: TokenType,
     pub lexeme: String,
-    pub literal: Option<Box<dyn Any>>,
+    pub literal: Option<Literal>,
     pub line: usize,
 }
 

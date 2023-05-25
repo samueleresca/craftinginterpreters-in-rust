@@ -1,4 +1,4 @@
-use std::{sync::atomic::AtomicBool, fmt};
+use std::{fmt, sync::atomic::AtomicBool};
 
 pub static HAD_ERROR: AtomicBool = AtomicBool::new(false);
 
@@ -35,6 +35,10 @@ pub(crate) trait WithError {
 impl fmt::Display for CompileError {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         // Customize so only `x` and `y` are denoted.
-        write!(f, "[line {}] Error {}: {}", self.line, self.location, self.message)
+        write!(
+            f,
+            "[line {}] Error {}: {}",
+            self.line, self.location, self.message
+        )
     }
 }
