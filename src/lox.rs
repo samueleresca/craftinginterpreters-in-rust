@@ -1,4 +1,4 @@
-use crate::errors::{WithError, HAD_ERROR};
+use crate::errors::WithError;
 use std::io::{stdin, stdout, Write};
 
 pub(crate) struct Lox {}

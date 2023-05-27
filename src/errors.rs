@@ -20,6 +20,7 @@ impl CompileError {
 
 pub(crate) trait WithError {
     fn error(error: CompileError) {
+        Self::set_error(true);
         println!("{}", error);
     }
 
