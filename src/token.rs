@@ -55,40 +55,6 @@ pub enum Literal {
     Number(f64),
 }
 
-impl PartialEq for Literal {
-    fn eq(&self, other: &Self) -> bool {
-        match self {
-            Self::Identifier(s) => {
-                if let Self::Identifier(o) = other {
-                    s == o
-                } else {
-                    false
-                }
-            }
-            Self::Str(s) => {
-                if let Self::Str(o) = other {
-                    s == o
-                } else {
-                    false
-                }
-            }
-            Self::Number(s) => {
-                if let Self::Number(o) = other {
-                    s == o
-                } else {
-                    false
-                }
-            }
-        }
-    }
-
-    fn ne(&self, other: &Self) -> bool {
-        !self.eq(other)
-    }
-}
-
-impl Eq for Literal {}
-
 #[derive(Debug, Clone)]
 pub(crate) struct Token {
     pub r#type: TokenType,

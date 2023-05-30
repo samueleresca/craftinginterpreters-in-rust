@@ -1,10 +1,10 @@
 use std::env;
 
 mod errors;
+mod expr;
 mod lox;
 mod scanner;
 mod token;
-
 fn main() {
     let args: Vec<String> = env::args().collect();
     let mut interpreter = lox::Lox::new();

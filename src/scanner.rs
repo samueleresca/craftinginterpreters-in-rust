@@ -327,11 +327,43 @@ impl Scanner {
 #[cfg(test)]
 mod tests {
     use crate::{
-        errors::{WithError},
+        errors::WithError,
         token::{Literal, TokenType},
     };
 
     use super::Scanner;
+
+    impl PartialEq for Literal {
+        fn eq(&self, other: &Self) -> bool {
+            match self {
+                Self::Identifier(s) => {
+                    if let Self::Identifier(o) = other {
+                        s == o
+                    } else {
+                        false
+                    }
+                }
+                Self::Str(s) => {
+                    if let Self::Str(o) = other {
+                        s == o
+                    } else {
+                        false
+                    }
+                }
+                Self::Number(s) => {
+                    if let Self::Number(o) = other {
+                        s == o
+                    } else {
+                        false
+                    }
+                }
+            }
+        }
+
+        fn ne(&self, other: &Self) -> bool {
+            !self.eq(other)
+        }
+    }
 
     #[test]
     fn parse_empty() {
